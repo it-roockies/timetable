@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getBookings, getGroups, getToken } from "../api";
+import { getBookings, getToken } from "../api";
+import Booking from "./Booking";
+import { CacheContext } from "./DataProvider";
 
 const periods = [
   {
@@ -47,29 +49,21 @@ const periods = [
   },
 ];
 
-function renderBooking(bookings, group, period) {
-  const booking = bookings.find(
+function findBooking(bookings, group, period) {
+  return bookings.find(
     (booking) => booking.group === group.id && booking.period === period.period
   );
-
-  if (!booking) {
-    return null;
-  }
-
-  return <div>{booking.date}</div>;
 }
 
 function TablePage() {
-  const [groups, setGroups] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const cache = useContext(CacheContext);
 
   useEffect(() => {
     async function fetchData() {
       const token = await getToken("admin", "admin");
       const res = await getBookings(token);
       setBookings(res);
-      const res2 = await getGroups(token);
-      setGroups(res2);
     }
     fetchData();
   }, []);
@@ -86,13 +80,15 @@ function TablePage() {
             </div>
           ))}
         </div>
-        {groups.map((group) => (
+        {Object.values(cache.groups).map((group) => (
           <div key={group.id} className="flex bb bl br">
             <div className="flex-none w-25 pv2 ph3">{group.name}</div>
             {periods.map((period) => (
-              <div key={period.name} className="flex-auto pv2 ph3 bl">
-                {renderBooking(bookings, group, period)}
-              </div>
+              <Booking
+                key={period.name}
+                className="flex-auto pv2 ph3 bl"
+                booking={findBooking(bookings, group, period)}
+              />
             ))}
           </div>
         ))}

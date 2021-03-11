@@ -13,7 +13,7 @@ function ImportPage() {
 
       async function doIt() {
         const token = await getToken("admin", "admin");
-        const response = await fetch("/api/timetable-data/", {
+        const response = await fetch("/api/timetable/", {
           method: "POST",
           headers: {
             Authorization: `Token ${token}`,

@@ -32,3 +32,15 @@ export async function getBookings(token) {
 export async function getGroups(token) {
   return await get("group", token);
 }
+
+export async function getSubjects(token) {
+  return await get("subject", token);
+}
+
+export async function getTeachers(token) {
+  return await get("teacher", token);
+}
+
+export async function getClassrooms(token) {
+  return await get("classroom", token);
+}
