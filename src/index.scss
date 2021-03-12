@@ -1,0 +1,5 @@
+@import "~carbon-components/scss/globals/scss/styles.scss";
+@import "~@carbon/themes/scss/themes";
+
+// Use the gray 100 theme
+@include carbon--theme($carbon--theme--white);

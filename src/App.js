@@ -3,14 +3,16 @@ import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import ImportPage from "./components/ImportPage";
-import TablePage from "./components/TablePage";
+import ImportPage from "./pages/ImportPage";
+import TablePage from "./pages/TablePage";
+import NotFoundPage from "./pages/NotFoundPage";
+import Header from "./components/Header";
 import DataProvider from "./components/DataProvider";
 
 function App() {
   return (
-    <>
-      <Router>
+    <Router>
+      <Header>
         <Routes>
           <Route
             path="/"
@@ -21,18 +23,10 @@ function App() {
             }
           />
           <Route path="import" element={<ImportPage />} />
-          <Route
-            path="*"
-            element={
-              <div className="w-100 vh-100 flex flex-column items-center justify-center f-6">
-                <div>NOT FOUND</div>
-                <div>😿😿😿</div>
-              </div>
-            }
-          />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </Router>
-    </>
+      </Header>
+    </Router>
   );
 }
 
