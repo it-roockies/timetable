@@ -5,12 +5,11 @@ name: CI/CD
 
 on:
   push:
-    branches: 
+    branches:
       - master
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -18,33 +17,33 @@ jobs:
         node-version: [15.x]
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: yarn
-      env:
-        CI: true
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Run the tests
-      run: yarn test
-      env:
-        CI: true
+      - name: Install dependencies
+        run: yarn
+        env:
+          CI: true
 
-    - name: Build
-      run: yarn build
-      env:
-        CI: true
-    
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@v2.1.5
-      env:
+      - name: Run the tests
+        run: yarn test
+        env:
+          CI: true
+
+      - name: Build
+        run: yarn build
+        env:
+          CI: true
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete"
+          ARGS: "-avzr --delete"
           SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
