@@ -108,21 +108,18 @@ function TablePage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map(
-                  (row) =>
-                    console.log(row) || (
-                      <TableRow key={row.id} {...getRowProps({ row })}>
-                        {row.cells.map((cell, idx) => (
-                          <TableCell key={cell.id}>
-                            {idx === 0 ? cell.value : null}
-                            {idx > 0 && cell.value ? (
-                              <Booking booking={cell.value} />
-                            ) : null}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    )
-                )}
+                {rows.map((row) => (
+                  <TableRow key={row.id} {...getRowProps({ row })}>
+                    {row.cells.map((cell, idx) => (
+                      <TableCell key={cell.id}>
+                        {idx === 0 ? cell.value : null}
+                        {idx > 0 && cell.value ? (
+                          <Booking booking={cell.value} />
+                        ) : null}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
