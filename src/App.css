@@ -1,2 +1,10 @@
-.timetable-cell {
+@media only screen and (max-width: 767px) {
+  .bx--content {
+    padding: 0;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .login-form {
+    max-width: 480px;
+  }
 }

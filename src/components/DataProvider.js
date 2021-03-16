@@ -1,3 +1,4 @@
+import { Loading } from "carbon-components-react";
 import { createContext, useEffect, useState } from "react";
 import {
   getGroups,
@@ -31,6 +32,7 @@ async function fetchData(setState) {
   const groups = await getGroups(token);
 
   setState({
+    isLoading: false,
     teachers: getData(teachers),
     subjects: getData(subjects),
     classrooms: getData(classrooms),
@@ -40,6 +42,7 @@ async function fetchData(setState) {
 
 function DataProvider({ children }) {
   const [state, setState] = useState({
+    isLoading: true,
     teachers: {},
     subjects: {},
     classrooms: {},
@@ -49,6 +52,10 @@ function DataProvider({ children }) {
   useEffect(() => {
     fetchData(setState);
   }, []);
+
+  if (state.isLoading) {
+    return <Loading description="Loading data..." />;
+  }
 
   return (
     <CacheContext.Provider value={state}>{children}</CacheContext.Provider>

@@ -11,7 +11,12 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import {
+  CacheFirst,
+  NetworkFirst,
+  StaleWhileRevalidate,
+} from "workbox-strategies";
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 
 clientsClaim();
 
@@ -40,6 +45,13 @@ registerRoute(
     if (url.pathname.match(fileExtensionRegexp)) {
       return false;
     } // Return true to signal that we want to use the handler.
+
+    if (
+      url.pathname.startsWith("/admin/") ||
+      url.pathname.startsWith("/api/")
+    ) {
+      return false;
+    }
 
     return true;
   },
@@ -71,3 +83,40 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+registerRoute(
+  ({ url }) => url.origin === "https://fonts.googleapis.com",
+  new StaleWhileRevalidate({
+    cacheName: "google-fonts-stylesheets",
+  })
+);
+
+registerRoute(
+  ({ url }) => url.origin === "https://fonts.gstatic.com",
+  new CacheFirst({
+    cacheName: "google-fonts-webfonts",
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxAgeSeconds: 60 * 60 * 24 * 365,
+        maxEntries: 30,
+      }),
+    ],
+  })
+);
+
+registerRoute(
+  ({ url }) => url.pathname.startsWith("/api/"),
+  new NetworkFirst({
+    networkTimeoutSeconds: 1,
+    cacheName: "api",
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 0 * 60 * 24 * 7, // 1 week
+      }),
+    ],
+  })
+);

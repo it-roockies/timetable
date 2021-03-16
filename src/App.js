@@ -1,32 +1,23 @@
+import { ErrorBoundary, Loading } from "carbon-components-react";
+import { Suspense } from "react";
 import "tachyons/css/tachyons.css";
 import "./App.css";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ErrorBoundaryFallback from "./components/ErrorBoundaryFallback";
 
-import ImportPage from "./pages/ImportPage";
-import TablePage from "./pages/TablePage";
-import NotFoundPage from "./pages/NotFoundPage";
-import Header from "./components/Header";
-import DataProvider from "./components/DataProvider";
+import Router from "./Router";
 
 function App() {
   return (
-    <Router>
-      <Header>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <DataProvider>
-                <TablePage />
-              </DataProvider>
-            }
-          />
-          <Route path="import" element={<ImportPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Header>
-    </Router>
+    <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
+      <Suspense
+        fallback={
+          <Loading description="Active loading indicator" withOverlay={false} />
+        }
+      >
+        <Router />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 

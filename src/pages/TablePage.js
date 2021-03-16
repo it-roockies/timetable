@@ -1,5 +1,6 @@
 import {
   DataTable,
+  Loading,
   Table,
   TableBody,
   TableCell,
@@ -45,13 +46,16 @@ const headers = [
 ];
 
 function findBooking(bookings, group, period) {
+  if (bookings === null) {
+    return null;
+  }
   return bookings.find(
     (booking) => booking.group === group.id && booking.period === period
   );
 }
 
 function TablePage() {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState(null);
   const cache = useContext(CacheContext);
 
   const rows = useMemo(
@@ -77,6 +81,10 @@ function TablePage() {
     }
     fetchData();
   }, []);
+
+  if (bookings === null) {
+    return <Loading description="Loading timetable" />;
+  }
 
   return (
     <>
